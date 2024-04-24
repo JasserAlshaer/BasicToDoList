@@ -97,33 +97,32 @@ namespace BasicToDoList.Controllers
             return View();
         }
 
-        public IActionResult MissionForm()
-        {
-            return View("MissionForm");
-        }
-        public IActionResult Update(int id)
-        {
-            var entity = _basicToDoListDbContext.Missions.FirstOrDefault(x=>x.Id == id);
-            if (entity == null)
-            {
-                return BadRequest("Entity Dose not Exisit");
-            }
-            return View(entity);
-        }
         [HttpPost]
-        public IActionResult Update(int id,string title,string description,string priority,int statusId)
+        public IActionResult UpdateOrCreate(int id,string title,string description,string priority,int statusId)
         {
             var entity = _basicToDoListDbContext.Missions.FirstOrDefault(x => x.Id == id);
             if (entity == null)
             {
-                return BadRequest("Entity Dose not Exisit");
+                Mission test = new Mission();
+                int userId = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
+                test.User = _basicToDoListDbContext.Users.Find(userId);
+                test.Title = title;
+                test.Description = description;
+                test.PriorityLevel = priority;
+                test.MissionStatus = _basicToDoListDbContext.MissionStatus.Find(statusId);
+                _basicToDoListDbContext.Add(test);
+                _basicToDoListDbContext.SaveChanges();
             }
-            entity.Title = title;
-            entity.Description = description;
-            entity.PriorityLevel = priority;
-            entity.MissionStatus = _basicToDoListDbContext.MissionStatus.Find(statusId);
-            _basicToDoListDbContext.Update(entity);
-            _basicToDoListDbContext.SaveChanges();
+            else
+            {
+                entity.Title = title;
+                entity.Description = description;
+                entity.PriorityLevel = priority;
+                entity.MissionStatus = _basicToDoListDbContext.MissionStatus.Find(statusId);
+                _basicToDoListDbContext.Update(entity);
+                _basicToDoListDbContext.SaveChanges();
+            }
+            
             return RedirectToAction("MyMission");
         }
         [HttpPost]

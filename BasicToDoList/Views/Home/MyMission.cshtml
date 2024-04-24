@@ -25,28 +25,13 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td id="itemId">102</td>
-                                    <td>Task Title</td>
-                                    <td colspan="2">Description</td>
-                                    <td><label class="badge badge-danger">Pending</label></td>
-                                    <td colspan="3">
-                                        <a class="btn btn-sm btn-outline-secondary" asp-action=""> Edit </a>
-
-                                        <a type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#exampleModalCenter"
-                                           onclick="handleButtonClick(this)"> Delete </a>
-                                        <!-- Button trigger modal -->
-                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
-                                            Launch demo modal
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
                                     <td id="itemId">1</td>
-                                    <td>Task Title</td>
-                                    <td colspan="2">Description</td>
-                                    <td><label class="badge badge-danger">Pending</label></td>
+                                    <td id="itemTitle">Task Title</td>
+                                    <td id="itemDesc" colspan="2">Description</td>
+                                    <td id="itemStatus"><label class="badge badge-danger">Pending</label></td>
                                     <td colspan="3">
-                                        <a class="btn btn-sm btn-outline-secondary" asp-action=""> Edit </a>
+                                        <a type="button" class="btn btn-sm btn-outline-secondary"
+                                           data-toggle="modal" onclick="handleEditButtonClick(this)" data-target="#createorupdateMission"> Edit </a>
 
                                         <a type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#exampleModalCenter"
                                            onclick="handleButtonClick(this)"> Delete </a>
@@ -73,33 +58,107 @@
 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <form asp-action="Delete" method="post">
-        <div class="modal-content">
+            <div class="modal-content">
 
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Are You Sure ?</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <input name="id" id="selectedItemId" />
-                <hr />
-                Are You Want To Remove This Mission From List ?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Are You Sure ?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input name="id" id="selectedItemId" hidden />
+                    Are You Want To Remove This Mission From List ?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
 
-        </div>
+            </div>
         </form>
     </div>
 </div>
 
+<div class="modal fade" id="createorupdateMission" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+        <form asp-action="UpdateOrCreate" method="post">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Manage Mission</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body row">
+                    <div class="form-group col-12">
+                        <input name="id" id="selectedItemId" hidden />
+                        <label for="exampleInputName1">Title</label>
+                        <input type="text" name="title" id="selectedItemTitle" class="form-control" id="exampleInputName1" placeholder="Name">
+                    </div>
+                    <div class="form-group col-12">
+                        <label for="exampleInputEmail3">Description</label>
+                        <input type="text" name="description" id="selectedItemDescription" class="form-control" id="exampleInputEmail3" placeholder="Email">
+                    </div>
+                    <div class="form-group col-12">
+                        <label for="exampleSelectGender">Status</label>
+                        <select class="form-control" id="exampleSelectGender" name="statusId" id="selectedItemStatus">
+                            <option value="1">New</option>
+                            <option value="2">In Progress</option>
+                            <option value="3">Completed</option>
+                        </select>
+                    </div>
+                    <div class="col-4 form-group">
+                        <label for="exampleInputCity1"></label>
+
+                        <input type="radio" name="priority" value="High" class="form-check-input" id="exampleInputCity1" placeholder="Location">High
+
+                    </div>
+
+                    <div class="col-4 form-group">
+                        <input type="radio" name="priority" value="Medium" class="form-check-input" id="exampleInputCity1" placeholder="Location">Medium
+                        <label for="exampleInputCity1"></label>
+                    </div>
+                    <div class="col-4 form-group">
+                        <label for="exampleInputCity1"></label>
+                        <input type="radio" name="priority" value="Low" class="form-check-input" id="exampleInputCity1" placeholder="Location">Low
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 @*
     Scripts
 *@
 <script>
+    function handleEditButtonClick(button) {
+        const row = button.closest('tr');
+        const itemIdCell = row.querySelector('#itemId');
+        // Read the innerHTML of the <td> element
+        const itemId = itemIdCell.innerHTML;
+        const inp = document.getElementById("selectedItemId")
+        inp.value = itemId;
+        //Title
+        const itemTitleCell = row.querySelector('#itemTitle');
+        const itemTitle = itemTitleCell.innerHTML;
+        const inp2 = document.getElementById("selectedItemTitle")
+        inp2.value = itemTitle;
+        //Description
+        const itemDescriptionCell = row.querySelector('#itemDesc');
+        const itemDesc = itemDescriptionCell.innerHTML;
+        const inp3 = document.getElementById("selectedItemDescription")
+        inp3.value = itemDesc;
+        //Status
+        const itemStatusCell = row.querySelector('#itemStatus');
+        const itemStatus = itemStatusCell.innerHTML;
+        const inp4 = document.getElementById("selectedItemStatus")
+        inp4.value = itemStatus;
+    }
     function handleButtonClick(button) {
         // Get the parent row of the clicked button
         const row = button.closest('tr');
@@ -107,9 +166,9 @@
         // Read the innerHTML of the <td> element
         const itemId = itemIdCell.innerHTML;
         // Log the itemId to the console
-        const inp = document.getElementById("#selectedItemId")
+        const inp = document.getElementById("selectedItemId")
         console.log('input:', inp);
-        inp.Value = itemId;
+        inp.value = itemId; // Use 'value' instead of 'Value' to set the value
         console.log('ItemId:', itemId);
     }
 </script>
