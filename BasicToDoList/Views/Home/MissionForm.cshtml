@@ -1,0 +1,49 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div class="col-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Create / Edit Mission</h4>
+            <form class="forms-sample" asp-action="">
+                <div class="form-group">
+                    <label for="exampleInputName1">Title</label>
+                    <input type="text" class="form-control" id="exampleInputName1" placeholder="Name">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputEmail3">Description</label>
+                    <input type="text" class="form-control" id="exampleInputEmail3" placeholder="Email">
+                </div>
+                <div class="form-group">
+                    <label for="exampleSelectGender">Status</label>
+                    <select class="form-control" id="exampleSelectGender">
+                        <option>Male</option>
+
+                    </select>
+                </div>
+
+                <div class="row">
+                    <div class="col-4 form-group">
+                        <label for="exampleInputCity1"></label>
+
+                        <input type="radio" class="form-check-input" id="exampleInputCity1" placeholder="Location">High
+
+                    </div>
+
+                    <div class="col-4 form-group">
+                        <input type="radio" class="form-check-input" id="exampleInputCity1" placeholder="Location">Meduim
+                        <label for="exampleInputCity1"></label>
+                    </div>
+                    <div class="col-4 form-group">
+                        <label for="exampleInputCity1"></label>
+                        <input type="radio" class="form-check-input" id="exampleInputCity1" placeholder="Location">Low
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary mr-2">Submit</button>
+                <button class="btn btn-light">Cancel</button>
+            </form>
+        </div>
+    </div>
+</div>
