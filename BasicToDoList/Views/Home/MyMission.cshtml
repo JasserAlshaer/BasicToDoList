@@ -1,6 +1,5 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model Tuple<List<BasicToDoList.Models.DTO.MissionInformationDTO>
+,List<BasicToDoList.Models.Entity.MissionStatus>>;
 @{
 }
 <div class="content-wrapper">
@@ -10,6 +9,9 @@
                 <div class="card-body">
                     <h4 class="card-title">My Mission Table</h4>
                     <p class="card-description">
+                        <a type="button" class="btn btn-sm btn-secondary"
+                           style="color:white;"
+                           data-toggle="modal" onclick="handleEditButtonClick(this)" data-target="#createorupdateMission"> Create </a>
 
                     </p>
                     <div class="table-responsive">
@@ -20,28 +22,45 @@
                                     <th>Title</th>
                                     <th colspan="2">Description</th>
                                     <th>Status</th>
-                                    <th colspan="3">Actions</th>
+                                    <th>Priority</th>
+                                    <th colspan="2">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td id="itemId">1</td>
-                                    <td id="itemTitle">Task Title</td>
-                                    <td id="itemDesc" colspan="2">Description</td>
-                                    <td id="itemStatus"><label class="badge badge-danger">Pending</label></td>
-                                    <td colspan="3">
-                                        <a type="button" class="btn btn-sm btn-outline-secondary"
-                                           data-toggle="modal" onclick="handleEditButtonClick(this)" data-target="#createorupdateMission"> Edit </a>
+                                @foreach (var item in Model.Item1)
+                                {
+                                    <tr>
 
-                                        <a type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#exampleModalCenter"
-                                           onclick="handleButtonClick(this)"> Delete </a>
+                                        <td id="itemId">@item.Id</td>
+                                        <td id="itemTitle">@item.Name</td>
+                                        <td id="itemDesc" colspan="2">@item.Description</td>
+                                        @if (item.Status == "New")
+                                        {
+                                            <td id="itemStatus"><label class="badge badge-success">New</label></td>
+                                        }
+                                        else if (item.Status == "In Progress")
+                                        {
+                                            <td id="itemStatus"><label class="badge badge-info">In Progress</label></td>
+                                        }
+                                        else if (item.Status == "Completed")
+                                        {
+                                            <td id="itemStatus"><label class="badge badge-primary">Completed</label></td>
+                                        }
 
-                                        <!-- Button trigger modal -->
-                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
-                                            Launch demo modal
-                                        </button>
-                                    </td>
-                                </tr>
+                                        <td id="itemTitle">@item.Priority</td>
+                                        <td colspan="2">
+                                            <a type="button" class="btn btn-sm btn-secondary"
+                                               style="color:white;"
+                                               data-toggle="modal" onclick="handleEditButtonClick(this)" data-target="#createorupdateMission"> Edit </a>
+
+                                            <a type="button" class="btn btn-sm btn-danger"
+                                               style="color:white;" 
+                                               data-toggle="modal" data-target="#exampleModalCenter"
+                                               onclick="handleButtonClick(this)"> Delete </a>
+                                        </td>
+                                    </tr>
+                                }
+
                             </tbody>
                         </table>
                     </div>
@@ -67,7 +86,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <input name="id" id="selectedItemId" hidden />
+                    <input name="id" id="selectedItemId" />
                     Are You Want To Remove This Mission From List ?
                 </div>
                 <div class="modal-footer">
@@ -92,36 +111,37 @@
                 </div>
                 <div class="modal-body row">
                     <div class="form-group col-12">
-                        <input name="id" id="selectedItemId" hidden />
+                        <input name="id" id="selectedMangeItemId" hidden  placeholder="te" />
                         <label for="exampleInputName1">Title</label>
-                        <input type="text" name="title" id="selectedItemTitle" class="form-control" id="exampleInputName1" placeholder="Name">
+                        <input type="text" name="title" id="selectedItemTitle" required class="form-control" id="exampleInputName1" placeholder="Name">
                     </div>
                     <div class="form-group col-12">
                         <label for="exampleInputEmail3">Description</label>
-                        <input type="text" name="description" id="selectedItemDescription" class="form-control" id="exampleInputEmail3" placeholder="Email">
+                        <input type="text" name="description" id="selectedItemDescription" required class="form-control" id="exampleInputEmail3" placeholder="Email">
                     </div>
                     <div class="form-group col-12">
                         <label for="exampleSelectGender">Status</label>
-                        <select class="form-control" id="exampleSelectGender" name="statusId" id="selectedItemStatus">
-                            <option value="1">New</option>
-                            <option value="2">In Progress</option>
-                            <option value="3">Completed</option>
+                        <select class="form-control" id="exampleSelectGender" name="statusId" id="selectedItemStatus" required>
+                            @foreach (var item in Model.Item2)
+                            {
+                                <option value="@item.Id">@item.Name</option>
+                            }
                         </select>
                     </div>
                     <div class="col-4 form-group">
                         <label for="exampleInputCity1"></label>
 
-                        <input type="radio" name="priority" value="High" class="form-check-input" id="exampleInputCity1" placeholder="Location">High
+                        <input type="radio" name="priority" value="High" class="form-check-input" id="exampleInputCity1" placeholder="Location" required>High
 
                     </div>
 
                     <div class="col-4 form-group">
-                        <input type="radio" name="priority" value="Medium" class="form-check-input" id="exampleInputCity1" placeholder="Location">Medium
+                        <input type="radio" name="priority" value="Medium" class="form-check-input" id="exampleInputCity1" placeholder="Location" required>Medium
                         <label for="exampleInputCity1"></label>
                     </div>
                     <div class="col-4 form-group">
                         <label for="exampleInputCity1"></label>
-                        <input type="radio" name="priority" value="Low" class="form-check-input" id="exampleInputCity1" placeholder="Location">Low
+                        <input type="radio" name="priority" value="Low" class="form-check-input" id="exampleInputCity1" placeholder="Location" required>Low
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -141,7 +161,7 @@
         const itemIdCell = row.querySelector('#itemId');
         // Read the innerHTML of the <td> element
         const itemId = itemIdCell.innerHTML;
-        const inp = document.getElementById("selectedItemId")
+        const inp = document.getElementById("selectedMangeItemId")
         inp.value = itemId;
         //Title
         const itemTitleCell = row.querySelector('#itemTitle');

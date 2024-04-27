@@ -85,16 +85,28 @@ namespace BasicToDoList.Controllers
         public IActionResult MyMission()
         {
             int userId = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
-            
-            var res = from mission in _basicToDoListDbContext.Missions
-                      join status in _basicToDoListDbContext.MissionStatus
-                      on mission.MissionStatus.Id equals status.Id
-                      where mission.User.Id == userId
-                      select new MissionInformationDTO
-                      {
+            if(userId == 0)
+            {
+                return RedirectToAction("Login");
+            }
+            else
+            {
+                var res = from mission in _basicToDoListDbContext.Missions
+                          join status in _basicToDoListDbContext.MissionStatus
+                          on mission.MissionStatus.Id equals status.Id
+                          where mission.User.Id == userId
+                          select new MissionInformationDTO
+                          {
+                              Id = mission.Id,
+                              Name = mission.Title,
+                              Description = mission.Description,
+                              Priority = mission.PriorityLevel,
+                              Status = status.Name
+                          };
+                var statusList = _basicToDoListDbContext.MissionStatus.ToList();
+                return View(Tuple.Create(res.ToList(), statusList));
+            }
 
-                      };
-            return View();
         }
 
         [HttpPost]
@@ -137,6 +149,23 @@ namespace BasicToDoList.Controllers
             _basicToDoListDbContext.Update(entity);
             _basicToDoListDbContext.SaveChanges();
             return RedirectToAction("MyMission");
+        }
+
+        public IActionResult Logout()
+        {
+            int userId = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
+            var entity = _basicToDoListDbContext.Users.FirstOrDefault(x => x.Id == userId);
+            if (entity == null)
+            {
+                return BadRequest("Entity Dose not Exisit");
+            }
+            entity.IsLoggedIn = false;
+            _basicToDoListDbContext.Update(entity);
+            _basicToDoListDbContext.SaveChanges();
+            HttpContext.Session.Remove("UserId");
+            HttpContext.Session.Clear();
+            return RedirectToAction("Index");
+
         }
     }
 }
